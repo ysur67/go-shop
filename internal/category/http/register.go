@@ -9,6 +9,7 @@ func RegisterHttpEndpoints(router *gin.RouterGroup, us category.UseCase) {
 	handler := NewHandler(us)
 	group := router.Group("/category")
 	{
+		group.GET("", handler.Get)
 		group.GET("/:id", handler.GetDetail)
 	}
 }

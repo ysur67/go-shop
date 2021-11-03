@@ -16,6 +16,10 @@ func NewUseCase(repo category.Repository) *UseCase {
 	}
 }
 
+func (us *UseCase) GetAll(ctx context.Context) (*[]models.Category, error) {
+	return us.repo.GetAll(ctx)
+}
+
 func (us *UseCase) GetCategory(ctx context.Context, id string) (*models.Category, error) {
 	return us.repo.GetCategoryById(ctx, id)
 }

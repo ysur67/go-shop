@@ -29,6 +29,23 @@ func NewHandler(us category.UseCase) *Handler {
 	}
 }
 
+func (handler *Handler) Get(ctx *gin.Context) {
+	categories, err := handler.useCase.GetAll(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			&Message{
+				err.Error(),
+			},
+		)
+		return
+	}
+	ctx.JSON(
+		http.StatusOK,
+		toResponseArray(categories),
+	)
+}
+
 func (handler *Handler) GetDetail(ctx *gin.Context) {
 	categoryId := ctx.Param("id")
 	if categoryId == "" {
@@ -63,4 +80,12 @@ func toResponse(model *models.Category) *Category {
 		Description: model.Description,
 		ImageUrl:    model.Image.Url,
 	}
+}
+
+func toResponseArray(models *[]models.Category) *[]Category {
+	out := make([]Category, len(*models))
+	for index, model := range *models {
+		out[index] = *toResponse(&model)
+	}
+	return &out
 }

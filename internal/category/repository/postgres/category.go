@@ -22,6 +22,15 @@ func (repo *Repository) AutoMigrate() error {
 	return repo.db.AutoMigrate(&categoryModels.Category{})
 }
 
+func (repo *Repository) GetAll(ctx context.Context) (*[]models.Category, error) {
+	dbCategory := new([]categoryModels.Category)
+	result := repo.db.Find(dbCategory)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return toModels(dbCategory), nil
+}
+
 func (repo *Repository) GetCategoryById(ctx context.Context, id string) (*models.Category, error) {
 	dbCategory := new(categoryModels.Category)
 	result := repo.db.First(&dbCategory, id)
@@ -41,4 +50,12 @@ func toModel(category *categoryModels.Category) *models.Category {
 			Url: category.ImageUrl,
 		},
 	}
+}
+
+func toModels(categories *[]categoryModels.Category) *[]models.Category {
+	out := make([]models.Category, len(*categories))
+	for index, cat := range *categories {
+		out[index] = *toModel(&cat)
+	}
+	return &out
 }
