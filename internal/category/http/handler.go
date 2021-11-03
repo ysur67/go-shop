@@ -3,13 +3,10 @@ package http
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"shop/dtos"
 	"shop/internal/category"
 	"shop/models"
 )
-
-type Message struct {
-	Body string `json:"body"`
-}
 
 type Category struct {
 	Id          string `json:"id"`
@@ -34,8 +31,8 @@ func (handler *Handler) Get(ctx *gin.Context) {
 	if err != nil {
 		ctx.AbortWithStatusJSON(
 			http.StatusBadRequest,
-			&Message{
-				err.Error(),
+			&dtos.Message{
+				Body: err.Error(),
 			},
 		)
 		return
@@ -51,8 +48,8 @@ func (handler *Handler) GetDetail(ctx *gin.Context) {
 	if categoryId == "" {
 		ctx.AbortWithStatusJSON(
 			http.StatusBadRequest,
-			&Message{
-				"Provide id of required category",
+			&dtos.Message{
+				Body: "Provide id of required category",
 			},
 		)
 		return
@@ -61,8 +58,8 @@ func (handler *Handler) GetDetail(ctx *gin.Context) {
 	if err != nil {
 		ctx.AbortWithStatusJSON(
 			http.StatusBadRequest,
-			&Message{
-				err.Error(),
+			&dtos.Message{
+				Body: err.Error(),
 			},
 		)
 	}
@@ -77,8 +74,8 @@ func (handler *Handler) HttpGet(ctx *gin.Context) {
 	if err != nil {
 		ctx.AbortWithStatusJSON(
 			http.StatusBadRequest,
-			&Message{
-				err.Error(),
+			&dtos.Message{
+				Body: err.Error(),
 			},
 		)
 		return

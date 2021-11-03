@@ -1,5 +1,5 @@
 package dtos
 
 type Message struct {
-	body string
+	Body string
 }
