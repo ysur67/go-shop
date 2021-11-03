@@ -5,11 +5,19 @@ import (
 	"shop/internal/category"
 )
 
-func RegisterHttpEndpoints(router *gin.RouterGroup, us category.UseCase) {
+func RegisterApiEndpoints(router *gin.RouterGroup, us category.UseCase) {
 	handler := NewHandler(us)
 	group := router.Group("/category")
 	{
 		group.GET("", handler.Get)
 		group.GET("/:id", handler.GetDetail)
+	}
+}
+
+func RegisterHttpEndpoints(router *gin.RouterGroup, us category.UseCase) {
+	handler := NewHandler(us)
+	group := router.Group("/category")
+	{
+		group.GET("", handler.HttpGet)
 	}
 }

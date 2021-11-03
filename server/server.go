@@ -46,9 +46,11 @@ func (app *App) Run(port string) error {
 		gin.Recovery(),
 		gin.Logger(),
 	)
-
+	router.LoadHTMLGlob("templates/category/*.html")
 	api := router.Group("/api")
-	categoryHttp.RegisterHttpEndpoints(api, app.categoryUseCase)
+	categoryHttp.RegisterApiEndpoints(api, app.categoryUseCase)
+	httpRoute := router.Group("")
+	categoryHttp.RegisterHttpEndpoints(httpRoute, app.categoryUseCase)
 
 	app.server = &http.Server{
 		Addr:           ":" + port,

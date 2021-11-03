@@ -72,6 +72,22 @@ func (handler *Handler) GetDetail(ctx *gin.Context) {
 	)
 }
 
+func (handler *Handler) HttpGet(ctx *gin.Context) {
+	categories, err := handler.useCase.GetAll()
+	if err != nil {
+		ctx.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			&Message{
+				err.Error(),
+			},
+		)
+		return
+	}
+	ctx.HTML(http.StatusOK, "category-list.html", gin.H{
+		"object_list": categories,
+	})
+}
+
 func toResponse(model *models.Category) *Category {
 	return &Category{
 		Id:          model.Id,
