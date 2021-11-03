@@ -29,7 +29,7 @@ func (repo *Repository) GetCategoryById(ctx context.Context, id string) (*models
 
 func toModel(category *categoryModels.Category) *models.Category {
 	return &models.Category{
-		Id:          strconv.Itoa(int(category.Id)),
+		Id:          strconv.Itoa(int(category.Model.ID)),
 		Title:       category.Title,
 		Slug:        category.Slug,
 		Description: category.Description,
