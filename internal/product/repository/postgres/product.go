@@ -36,6 +36,9 @@ func (repo *Repository) GetProduct(id string) (*models.Product, error) {
 	if result.Error != nil {
 		return nil, result.Error
 	}
+	if *dbProduct == (product.Product{}) {
+		return nil, product.DoesNotExist
+	}
 	return toModel(dbProduct), nil
 }
 

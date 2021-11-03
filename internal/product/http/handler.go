@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"shop/internal/product"
@@ -48,8 +49,14 @@ func (handler *Handler) GetProductDetailHttp(ctx *gin.Context) {
 	}
 	product, err := handler.useCase.GetProductById(id)
 	if err != nil {
-		ctx.HTML(http.StatusInternalServerError, "404.html", gin.H{
+		ctx.HTML(http.StatusNotFound, "404.html", gin.H{
 			"extra_message": err.Error(),
+		})
+		return
+	}
+	if product == nil {
+		ctx.HTML(http.StatusNotFound, "404.html", gin.H{
+			"extra_message": fmt.Sprintf("There is no products with id: %s", id),
 		})
 		return
 	}

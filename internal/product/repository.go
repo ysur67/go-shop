@@ -1,6 +1,11 @@
 package product
 
-import "shop/models"
+import (
+	"errors"
+	"shop/models"
+)
+
+var DoesNotExist = errors.New("product not found")
 
 type Repository interface {
 	AutoMigrate() error
