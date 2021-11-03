@@ -72,20 +72,21 @@ func (app *App) Run(port string) error {
 }
 
 func readConfig() error {
-	viper.SetConfigName(".env")
+	viper.SetConfigType("env")
+	viper.SetConfigFile("./config/.env")
 	return viper.ReadInConfig()
 }
 
 func initDB() (*gorm.DB, error) {
-	host := viper.GetString("db-host")
-	port := viper.GetString("db-port")
-	user := viper.GetString("db-user")
-	password := viper.GetString("db-user-password")
-	dbname := viper.GetString("db-name")
+	host := viper.GetString("db_host")
+	port := viper.GetInt("db_port")
+	user := viper.GetString("db_user")
+	password := viper.GetString("db_password")
+	dbname := viper.GetString("db_name")
 	connectionString := fmt.Sprintf(
-		"host=%s port=%s dbname=%s "+
-			"port=%s user=%s passsword=%s",
-		host, port, dbname, host, user, password,
+		"host=%s port=%d dbname=%s "+
+			"user=%s passsword=%s",
+		host, port, dbname, user, password,
 	)
 	fmt.Print(connectionString)
 	return gorm.Open(postgres.Open(connectionString), &gorm.Config{})
