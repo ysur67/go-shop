@@ -57,8 +57,6 @@ func (app *App) Run(port string) error {
 		gin.Logger(),
 	)
 	router.LoadHTMLGlob("templates/*/*.html")
-	//router.LoadHTMLGlob("templates/category/*.html")
-	//router.LoadHTMLGlob("templates/product/*.html")
 	api := router.Group("/api")
 	categoryHttp.RegisterApiEndpoints(api, app.categoryUseCase)
 	httpRoute := router.Group("")
