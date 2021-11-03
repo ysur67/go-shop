@@ -6,5 +6,5 @@ import (
 )
 
 type UseCase interface {
-	GetCategory(ctx context.Context, id string) (models.Category, error)
+	GetCategory(ctx context.Context, id string) (*models.Category, error)
 }
