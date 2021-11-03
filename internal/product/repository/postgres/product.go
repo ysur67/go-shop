@@ -32,7 +32,7 @@ func (repo *Repository) GetAll() (*[]models.Product, error) {
 
 func (repo *Repository) GetProductsByCategory(category *models.Category) (*[]models.Product, error) {
 	dbProduct := new([]product.Product)
-	result := repo.db.Where("category_id = ?", category.Id)
+	result := repo.db.Where("category_id = ?", category.Id).Find(&dbProduct)
 	if result.Error != nil {
 		return nil, result.Error
 	}
