@@ -32,6 +32,9 @@ func NewApp() *App {
 		panic(err)
 	}
 	catRepo := categoryRepo.NewRepository(db)
+	if err := catRepo.AutoMigrate(); err != nil {
+		panic(err)
+	}
 	return &App{
 		categoryUseCase: categoryUseCase.NewUseCase(catRepo),
 	}

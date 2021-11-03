@@ -18,6 +18,10 @@ func NewRepository(db *gorm.DB) *Repository {
 	}
 }
 
+func (repo *Repository) AutoMigrate() error {
+	return repo.db.AutoMigrate(&categoryModels.Category{})
+}
+
 func (repo *Repository) GetCategoryById(ctx context.Context, id string) (*models.Category, error) {
 	dbCategory := new(categoryModels.Category)
 	result := repo.db.First(&dbCategory, id)
