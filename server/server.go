@@ -88,6 +88,5 @@ func initDB() (*gorm.DB, error) {
 			"dbname=%s port=%d sslmode=disable",
 		host, user, password, dbname, port,
 	)
-	fmt.Print(connectionString)
 	return gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 }
