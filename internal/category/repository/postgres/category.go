@@ -39,6 +39,15 @@ func (repo *Repository) GetCategoryById(id string) (*models.Category, error) {
 	return toModel(dbCategory), nil
 }
 
+func (repo *Repository) GetCategoryBySlug(slug string) (*models.Category, error) {
+	dbCategory := new(categoryModels.Category)
+	result := repo.db.Where("slug = ?", slug).Find(&dbCategory)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return toModel(dbCategory), nil
+}
+
 func toModel(category *categoryModels.Category) *models.Category {
 	return &models.Category{
 		Id:          strconv.Itoa(int(category.Model.ID)),

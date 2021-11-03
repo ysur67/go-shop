@@ -15,12 +15,17 @@ import (
 	categoryHttp "shop/internal/category/http"
 	categoryRepo "shop/internal/category/repository/postgres"
 	categoryUseCase "shop/internal/category/usecase"
+	"shop/internal/product"
+	productHttp "shop/internal/product/http"
+	productRepo "shop/internal/product/repository/postgres"
+	productUseCase "shop/internal/product/usecase"
 	"time"
 )
 
 type App struct {
 	server          *http.Server
 	categoryUseCase category.UseCase
+	productUseCase  product.UseCase
 }
 
 func NewApp() *App {
@@ -35,8 +40,13 @@ func NewApp() *App {
 	if err := catRepo.AutoMigrate(); err != nil {
 		panic(err)
 	}
+	prodRepo := productRepo.NewRepository(db)
+	if err := prodRepo.AutoMigrate(); err != nil {
+		panic(err)
+	}
 	return &App{
 		categoryUseCase: categoryUseCase.NewUseCase(catRepo),
+		productUseCase:  productUseCase.NewUseCase(prodRepo, catRepo),
 	}
 }
 
@@ -46,11 +56,14 @@ func (app *App) Run(port string) error {
 		gin.Recovery(),
 		gin.Logger(),
 	)
-	router.LoadHTMLGlob("templates/category/*.html")
+	router.LoadHTMLGlob("templates/*/*.html")
+	//router.LoadHTMLGlob("templates/category/*.html")
+	//router.LoadHTMLGlob("templates/product/*.html")
 	api := router.Group("/api")
 	categoryHttp.RegisterApiEndpoints(api, app.categoryUseCase)
 	httpRoute := router.Group("")
 	categoryHttp.RegisterHttpEndpoints(httpRoute, app.categoryUseCase)
+	productHttp.RegisterHttpEndpoints(httpRoute, app.productUseCase)
 
 	app.server = &http.Server{
 		Addr:           ":" + port,

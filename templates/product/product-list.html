@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+</head>
+<body>
+    {{ range .object_list }}
+        <span>
+            <b>ID: {{ .Id }}</b>
+            Title: {{ .Title }}
+        </span>
+    {{ end }}
+</body>
+</html>
