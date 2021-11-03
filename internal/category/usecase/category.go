@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"context"
 	"shop/internal/category"
 	"shop/models"
 )
@@ -16,10 +15,10 @@ func NewUseCase(repo category.Repository) *UseCase {
 	}
 }
 
-func (us *UseCase) GetAll(ctx context.Context) (*[]models.Category, error) {
-	return us.repo.GetAll(ctx)
+func (us *UseCase) GetAll() (*[]models.Category, error) {
+	return us.repo.GetAll()
 }
 
-func (us *UseCase) GetCategory(ctx context.Context, id string) (*models.Category, error) {
-	return us.repo.GetCategoryById(ctx, id)
+func (us *UseCase) GetCategory(id string) (*models.Category, error) {
+	return us.repo.GetCategoryById(id)
 }

@@ -30,7 +30,7 @@ func NewHandler(us category.UseCase) *Handler {
 }
 
 func (handler *Handler) Get(ctx *gin.Context) {
-	categories, err := handler.useCase.GetAll(ctx)
+	categories, err := handler.useCase.GetAll()
 	if err != nil {
 		ctx.AbortWithStatusJSON(
 			http.StatusBadRequest,
@@ -57,7 +57,7 @@ func (handler *Handler) GetDetail(ctx *gin.Context) {
 		)
 		return
 	}
-	modelCategory, err := handler.useCase.GetCategory(ctx, categoryId)
+	modelCategory, err := handler.useCase.GetCategory(categoryId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(
 			http.StatusBadRequest,

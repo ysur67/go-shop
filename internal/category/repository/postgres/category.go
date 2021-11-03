@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"context"
 	"gorm.io/gorm"
 	categoryModels "shop/internal/category"
 	"shop/models"
@@ -22,7 +21,7 @@ func (repo *Repository) AutoMigrate() error {
 	return repo.db.AutoMigrate(&categoryModels.Category{})
 }
 
-func (repo *Repository) GetAll(ctx context.Context) (*[]models.Category, error) {
+func (repo *Repository) GetAll() (*[]models.Category, error) {
 	dbCategory := new([]categoryModels.Category)
 	result := repo.db.Find(dbCategory)
 	if result.Error != nil {
@@ -31,7 +30,7 @@ func (repo *Repository) GetAll(ctx context.Context) (*[]models.Category, error) 
 	return toModels(dbCategory), nil
 }
 
-func (repo *Repository) GetCategoryById(ctx context.Context, id string) (*models.Category, error) {
+func (repo *Repository) GetCategoryById(id string) (*models.Category, error) {
 	dbCategory := new(categoryModels.Category)
 	result := repo.db.First(&dbCategory, id)
 	if result.Error != nil {
