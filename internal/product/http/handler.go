@@ -16,7 +16,7 @@ func NewHandler(us product.UseCase) *Handler {
 	}
 }
 
-func (handler *Handler) GetHttp(ctx *gin.Context) {
+func (handler *Handler) GetProductsByCategorySlugHttp(ctx *gin.Context) {
 	categorySlug := ctx.Param("categorySlug")
 	if categorySlug == "" {
 		ctx.HTML(http.StatusNotFound, "404.html", gin.H{
@@ -27,12 +27,33 @@ func (handler *Handler) GetHttp(ctx *gin.Context) {
 	}
 	products, err := handler.useCase.GetProductsByCategorySlug(categorySlug)
 	if err != nil {
-		ctx.HTML(http.StatusInternalServerError, "base/404.html", gin.H{
+		ctx.HTML(http.StatusInternalServerError, "404.html", gin.H{
 			"extra_message": err.Error(),
 		})
 		return
 	}
 	ctx.HTML(http.StatusOK, "product-list.html", gin.H{
 		"object_list": products,
+	})
+}
+
+func (handler *Handler) GetProductDetailHttp(ctx *gin.Context) {
+	id := ctx.Param("id")
+	if id == "" {
+		ctx.HTML(http.StatusNotFound, "404.html", gin.H{
+			"extra_message": "You have to provide product id, if" +
+				" you want to see products detail info",
+		})
+		return
+	}
+	product, err := handler.useCase.GetProductById(id)
+	if err != nil {
+		ctx.HTML(http.StatusInternalServerError, "404.html", gin.H{
+			"extra_message": err.Error(),
+		})
+		return
+	}
+	ctx.HTML(http.StatusOK, "product-detail.html", gin.H{
+		"object": product,
 	})
 }

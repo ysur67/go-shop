@@ -30,6 +30,15 @@ func (repo *Repository) GetAll() (*[]models.Product, error) {
 	return toModels(dbProduct), nil
 }
 
+func (repo *Repository) GetProduct(id string) (*models.Product, error) {
+	dbProduct := new(product.Product)
+	result := repo.db.Find(&dbProduct, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return toModel(dbProduct), nil
+}
+
 func (repo *Repository) GetProductsByCategory(category *models.Category) (*[]models.Product, error) {
 	dbProduct := new([]product.Product)
 	result := repo.db.Where("category_id = ?", category.Id).Find(&dbProduct)

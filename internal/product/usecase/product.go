@@ -22,6 +22,10 @@ func (us *UseCase) GetAll() (*[]models.Product, error) {
 	return us.repo.GetAll()
 }
 
+func (us *UseCase) GetProductById(id string) (*models.Product, error) {
+	return us.repo.GetProduct(id)
+}
+
 func (us *UseCase) GetProductsByCategorySlug(categorySlug string) (*[]models.Product, error) {
 	category, err := us.categoryRepo.GetCategoryBySlug(categorySlug)
 	if err != nil {
