@@ -1,20 +1,13 @@
 package http
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"shop/dtos"
 	"shop/internal/category"
 	"shop/models"
-)
 
-type Category struct {
-	Id          string `json:"id"`
-	Title       string `json:"title"`
-	Slug        string `json:"slug"`
-	Description string `json:"description"`
-	ImageUrl    string `json:"image_url"`
-}
+	"github.com/gin-gonic/gin"
+)
 
 type Handler struct {
 	useCase category.UseCase
@@ -85,8 +78,8 @@ func (handler *Handler) HttpGet(ctx *gin.Context) {
 	})
 }
 
-func toResponse(model *models.Category) *Category {
-	return &Category{
+func toResponse(model *models.Category) *dtos.Category {
+	return &dtos.Category{
 		Id:          model.Id,
 		Title:       model.Title,
 		Slug:        model.Slug,
@@ -95,8 +88,8 @@ func toResponse(model *models.Category) *Category {
 	}
 }
 
-func toResponseArray(models *[]models.Category) *[]Category {
-	out := make([]Category, len(*models))
+func toResponseArray(models *[]models.Category) *[]dtos.Category {
+	out := make([]dtos.Category, len(*models))
 	for index, model := range *models {
 		out[index] = *toResponse(&model)
 	}
