@@ -6,5 +6,5 @@ COPY go.sum .
 RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./cmd/app/app.go
-CMD ["./app -upload"]
+CMD ["./app", "-upload"]
 EXPOSE 4444
