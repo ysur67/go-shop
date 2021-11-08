@@ -13,6 +13,10 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"shop/internal/account"
+	accountHttp "shop/internal/account/http"
+	accountRepo "shop/internal/account/repository/postgres"
+	accountUseCase "shop/internal/account/usecase"
 	"shop/internal/category"
 	categoryHttp "shop/internal/category/http"
 	categoryRepo "shop/internal/category/repository/postgres"
@@ -29,6 +33,7 @@ type App struct {
 	server          *http.Server
 	categoryUseCase category.UseCase
 	productUseCase  product.UseCase
+	accountUseCase  account.UseCase
 }
 
 func NewApp() *App {
@@ -39,13 +44,16 @@ func NewApp() *App {
 	if err != nil {
 		panic(err)
 	}
-
 	catRepo := categoryRepo.NewRepository(db)
 	if err := catRepo.AutoMigrate(); err != nil {
 		panic(err)
 	}
 	prodRepo := productRepo.NewRepository(db)
 	if err := prodRepo.AutoMigrate(); err != nil {
+		panic(err)
+	}
+	accRepo := accountRepo.NewRepository(db)
+	if err := accRepo.AutoMigrate(); err != nil {
 		panic(err)
 	}
 	shouldUploadFixtures := parseCommandLine()
@@ -61,6 +69,12 @@ func NewApp() *App {
 	return &App{
 		categoryUseCase: categoryUseCase.NewUseCase(catRepo),
 		productUseCase:  productUseCase.NewUseCase(prodRepo, catRepo),
+		accountUseCase: accountUseCase.NewAccountUseCase(
+			accRepo,
+			viper.GetString("auth.hash_salt"),
+			[]byte(viper.GetString("auth.signing_key")),
+			viper.GetDuration("auth.token_ttl"),
+		),
 	}
 }
 
@@ -72,6 +86,7 @@ func (app *App) Run(port string) error {
 	)
 	router.LoadHTMLGlob("templates/*/*.html")
 	router.Static("/static", "./static")
+	accountHttp.RegisterHTTPEndpoints(router, app.accountUseCase)
 	api := router.Group("/api")
 	categoryHttp.RegisterApiEndpoints(api, app.categoryUseCase)
 	httpRoute := router.Group("")
