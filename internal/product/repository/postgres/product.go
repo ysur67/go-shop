@@ -53,7 +53,7 @@ func (repo *Repository) GetProductsByCategory(category *models.Category) (*[]mod
 
 func toModel(product *product.Product) *models.Product {
 	return &models.Product{
-		Id:    product.Id,
+		Id:    strconv.Itoa(int(product.Model.ID)),
 		Title: product.Title,
 		Category: models.Category{
 			Id:          strconv.Itoa(product.CategoryID),

@@ -1,9 +1,12 @@
 package product
 
-import categoryModels "shop/internal/category"
+import (
+	"gorm.io/gorm"
+	categoryModels "shop/internal/category"
+)
 
 type Product struct {
-	Id          string
+	gorm.Model
 	Title       string
 	CategoryID  int
 	Category    categoryModels.Category

@@ -2,6 +2,8 @@ package server
 
 import (
 	"context"
+	"database/sql"
+	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -19,6 +21,7 @@ import (
 	productHttp "shop/internal/product/http"
 	productRepo "shop/internal/product/repository/postgres"
 	productUseCase "shop/internal/product/usecase"
+	"shop/internal/utils"
 	"time"
 )
 
@@ -36,6 +39,7 @@ func NewApp() *App {
 	if err != nil {
 		panic(err)
 	}
+
 	catRepo := categoryRepo.NewRepository(db)
 	if err := catRepo.AutoMigrate(); err != nil {
 		panic(err)
@@ -43,6 +47,16 @@ func NewApp() *App {
 	prodRepo := productRepo.NewRepository(db)
 	if err := prodRepo.AutoMigrate(); err != nil {
 		panic(err)
+	}
+	shouldUploadFixtures := parseCommandLine()
+	if shouldUploadFixtures {
+		sqlDb, err := db.DB()
+		if err != nil {
+			panic(err)
+		}
+		if err := uploadFixtures(sqlDb); err != nil {
+			panic(err)
+		}
 	}
 	return &App{
 		categoryUseCase: categoryUseCase.NewUseCase(catRepo),
@@ -105,4 +119,18 @@ func initDB() (*gorm.DB, error) {
 		host, user, password, dbname, port,
 	)
 	return gorm.Open(postgres.Open(connectionString), &gorm.Config{})
+}
+
+func parseCommandLine() bool {
+	shouldUpload := flag.Bool("upload", false, "Should the fixtures be loaded")
+	flag.Parse()
+	return *shouldUpload
+}
+
+func uploadFixtures(db *sql.DB) error {
+	fixturesUploadCommand := utils.NewLoadFixturesCommand(
+		db,
+		"upload-fixtures",
+	)
+	return fixturesUploadCommand.Execute()
 }
