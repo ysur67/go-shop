@@ -4,3 +4,15 @@
     font-weight: bold;
     margin-bottom: 15px;
 }
+
+.product-link {
+    display: block;
+    padding: 20px;
+    margin: 10px;
+    border: 2px solid gray;
+    transition: .3s;
+}
+
+.product-link:hover {
+    background-color: gray;
+}

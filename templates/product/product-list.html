@@ -7,10 +7,10 @@
 </head>
 <body>
     {{ range .object_list }}
-        <span>
+        <a class="product-link" href="/product/{{ .Id }}">
             <b>ID: {{ .Id }}</b>
             Title: {{ .Title }}
-        </span>
+        </a>
     {{ end }}
 </body>
 </html>
