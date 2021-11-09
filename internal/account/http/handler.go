@@ -48,3 +48,17 @@ func (handler *Handler) LoginUser(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, dtos.Message{Body: token})
 }
+
+func (handler *Handler) AccountPage(ctx *gin.Context) {
+	user := ctx.MustGet(account.ContextUserKey).(*models.User)
+	account, err := handler.useCase.GetUser(user.Username)
+	if err != nil {
+		ctx.HTML(http.StatusUnauthorized, "404.html", gin.H{
+			"extra_message": "You should be authorized to see this page",
+		})
+		return
+	}
+	ctx.HTML(http.StatusOK, "account.html", gin.H{
+		"object": account,
+	})
+}

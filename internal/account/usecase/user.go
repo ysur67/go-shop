@@ -55,6 +55,10 @@ func (useCase *UseCase) RegisterUser(user models.User) error {
 	return useCase.repo.CreateUser(user)
 }
 
+func (useCase *UseCase) GetUser(username string) (*models.User, error) {
+	return useCase.repo.GetUserByUsername(username)
+}
+
 func (useCase *UseCase) ParseToken(accessToken string) (*models.User, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &AuthClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
