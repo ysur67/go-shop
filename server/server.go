@@ -66,14 +66,15 @@ func NewApp() *App {
 			panic(err)
 		}
 	}
+	fmt.Println(viper.GetDuration("token_ttl"))
 	return &App{
 		categoryUseCase: categoryUseCase.NewUseCase(catRepo),
 		productUseCase:  productUseCase.NewUseCase(prodRepo, catRepo),
 		accountUseCase: accountUseCase.NewAccountUseCase(
 			accRepo,
-			viper.GetString("auth.hash_salt"),
-			[]byte(viper.GetString("auth.signing_key")),
-			viper.GetDuration("auth.token_ttl"),
+			viper.GetString("hash_salt"),
+			[]byte(viper.GetString("signing_key")),
+			viper.GetDuration("token_ttl"),
 		),
 	}
 }
@@ -86,12 +87,15 @@ func (app *App) Run(port string) error {
 	)
 	router.LoadHTMLGlob("templates/*/*.html")
 	router.Static("/static", "./static")
-	accountHttp.RegisterHTTPEndpoints(router, app.accountUseCase)
-	api := router.Group("/api")
+	accountHttp.RegisterApiEndpoints(router, app.accountUseCase)
+	accountMiddleware := accountHttp.NewAuthMiddleware(app.accountUseCase)
+	api := router.Group("/api", accountMiddleware)
 	categoryHttp.RegisterApiEndpoints(api, app.categoryUseCase)
 	httpRoute := router.Group("")
 	categoryHttp.RegisterHttpEndpoints(httpRoute, app.categoryUseCase)
 	productHttp.RegisterHttpEndpoints(httpRoute, app.productUseCase)
+	accountRoute := router.Group("/account", accountMiddleware)
+	accountHttp.RegisterHttpEndpoints(accountRoute, app.accountUseCase)
 
 	app.server = &http.Server{
 		Addr:           ":" + port,
